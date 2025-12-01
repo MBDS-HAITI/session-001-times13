@@ -24,12 +24,21 @@ function MainContent() {
   );
 }
 
+function Footer() {
+  return (
+    <footer>
+      Tous droits réservés - Alfred Times
+    </footer>
+  );
+}
+
 function App() {
   
   return (
     <>
        <Header />
        <MainContent />
+       <Footer />
     </>
   )
 }
