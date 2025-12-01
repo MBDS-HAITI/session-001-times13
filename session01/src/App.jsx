@@ -16,11 +16,20 @@ function Header() {
   );
 }
 
+function MainContent() {
+  return (
+    <main>
+      Ici, nous afficherons des informations interessantes :)
+    </main>
+  );
+}
+
 function App() {
   
   return (
     <>
        <Header />
+       <MainContent />
     </>
   )
 }
