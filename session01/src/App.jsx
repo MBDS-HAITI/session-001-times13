@@ -32,9 +32,12 @@ function MainContent() {
 }
 
 function Footer() {
+  const annee = new Date().getFullYear();
+  const nom = "Alfred";
+  const prenom = "Times";
   return (
     <footer>
-      Tous droits réservés - Alfred Times
+       © {annee} - {prenom}.{nom}, Tous droits réservés.
     </footer>
   );
 }
