@@ -10,12 +10,12 @@ import { Footer } from './components/Footer'
 
 
 function App() {
-  
+  const [selectedMenu, setSelectedMenu] = useState("Notes");
   return (
     <>
-       <Menu />
+       <Menu onSelect={setSelectedMenu} />
        <Header />
-       <MainContent />
+       <MainContent selectedMenu={selectedMenu}/>
        <Footer />
     </>
   )

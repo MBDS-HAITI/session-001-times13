@@ -1,6 +1,6 @@
 import RandomNote from './RandomNote';
 
-function MainContent() {
+function MainContent({selectedMenu}) {
   const now = new Date();
   const jour = now.getDate().toString().padStart(2, "0");   // 01–31
   const mois = now.toLocaleString("fr-FR", { month: "long" }); // janvier, février…
@@ -10,6 +10,7 @@ function MainContent() {
   const seconde = now.getSeconds().toString().padStart(2, "0");
   return (
     <main>
+      <h2>{selectedMenu}</h2>
         <RandomNote />
        Bonjour, on est le {jour}, {mois}, {annee} et il est {heure}:{minute}:{seconde}
     </main>

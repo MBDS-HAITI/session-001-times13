@@ -1,17 +1,22 @@
-export default function Menu() {
-  const items = ["Notes", "Etudiants", "Matières", "A propos"];
+import { useState } from "react";
 
-  const handleClick = (text) => {
-    alert(text);
-  };
+function Menu({ onSelect }) {
+  const menuItems = ["Notes", "Etudiants", "Matières", "A propos"];
+  const [active, setActive] = useState("Notes");
 
   return (
-    <nav className="menu">
-      {items.map((item) => (
-        <span 
-          key={item} 
-          className="menu-item"
-          onClick={() => handleClick(item)}
+    <nav style={{ display: "flex", gap: "20px" }}>
+      {menuItems.map((item) => (
+        <span
+          key={item}
+          onClick={() => {
+            setActive(item);
+            onSelect(item);
+          }}
+          style={{
+            cursor: "pointer",
+            fontWeight: active === item ? "bold" : "normal"
+          }}
         >
           {item}
         </span>
@@ -19,3 +24,5 @@ export default function Menu() {
     </nav>
   );
 }
+
+export default Menu;
