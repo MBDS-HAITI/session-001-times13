@@ -1,7 +1,7 @@
 import RandomNote from './RandomNote';
 import Notes from "./Notes";
 import Etudiants from "./Etudiants";
-
+import Matieres from "./Matieres";
 import APropos from "./APropos";
 
 function MainContent({selectedMenu}) {
@@ -16,6 +16,7 @@ function MainContent({selectedMenu}) {
     <main>
      {selectedMenu === "Notes" && <Notes />}
      {selectedMenu === "Etudiants" && <Etudiants />}
+     {selectedMenu === "Matières" && <Matieres />}
       {selectedMenu === "A propos" && <APropos />}
         <RandomNote />
        Bonjour, on est le {jour}, {mois}, {annee} et il est {heure}:{minute}:{seconde}
