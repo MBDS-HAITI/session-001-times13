@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import data from "../data/items.json";
+import { useState, useEffect, useMemo } from "react";
+import { gradesAPI } from "../services/api";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -16,11 +16,49 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 
 function Notes() {
+  const [data,setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [orderBy, setOrderBy] = useState("unique_id");
   const [order, setOrder] = useState("asc");
+
+   // ← AJOUTER ce useEffect
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const grades = await gradesAPI.getAll();
+        
+        // Transformer les données pour correspondre au format JSON existant
+        const formattedData = grades.map((grade, index) => ({
+          unique_id: grade._id || index,
+          student: {
+            firstname: grade.student?.firstName || 'N/A',
+            lastname: grade.student?.lastName || 'N/A'
+          },
+          course: grade.course?.name || 'N/A',
+          date: new Date(grade.date).toISOString().split('T')[0],
+          grade: grade.grade
+        }));
+        
+        setData(formattedData);
+        setLoading(false);
+      } catch (err) {
+        console.error('Erreur:', err);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  // ← AJOUTER cette condition pour le chargement
+  /*if (loading) {
+    return <Box sx={{ p: 3, textAlign: 'center' }}>Chargement...</Box>;
+  }*/
+const isLoading = loading;
 
   // Fonction de tri
   const handleSort = (property) => {
@@ -67,7 +105,7 @@ function Notes() {
     });
 
     return filtered.sort(getComparator(order, orderBy));
-  }, [searchTerm, order, orderBy]);
+  }, [data, searchTerm, order, orderBy]);
 
   // Données paginées
   const paginatedData = filteredAndSortedData.slice(
@@ -92,8 +130,14 @@ function Notes() {
     return "error";
   };
 
+ console.log("loading vaut :", loading);
   return (
     <Box sx={{ width: "100%", p: 3 }}>
+        {isLoading ? (
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        Chargement...
+      </Box>
+    ) : (
       <Paper elevation={3} sx={{ width: "100%", mb: 2, borderRadius: 2 }}>
         {/* Barre de recherche */}
         <Box sx={{ p: 2, bgcolor: "#f5f5f5" }}>
@@ -245,6 +289,7 @@ function Notes() {
           }
         />
       </Paper>
+       )}
     </Box>
   );
 }

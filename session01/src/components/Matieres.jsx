@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import data from "../data/items.json";
+import { useState, useEffect, useMemo } from "react";
+import { gradesAPI } from "../services/api";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -17,12 +17,41 @@ import Chip from "@mui/material/Chip";
 import LinearProgress from "@mui/material/LinearProgress";
 
 export default function Matieres() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [orderBy, setOrderBy] = useState("course");
   const [order, setOrder] = useState("asc");
 
+ useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const grades = await gradesAPI.getAll();
+        
+        // Transformer pour correspondre au format attendu
+        const formattedData = grades.map((grade) => ({
+          course: grade.course?.name || 'N/A',
+          grade: grade.grade
+        }));
+        
+        setData(formattedData);
+        setLoading(false);
+      } catch (err) {
+        console.error('Erreur:', err);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+ /*if (loading) {
+    return <Box sx={{ p: 3, textAlign: 'center' }}>Chargement...</Box>;
+  }
+*/
+const isLoading = loading;
   // Regrouper par cours et calculer les statistiques
   const coursesData = useMemo(() => {
     const courses = {};
@@ -49,7 +78,7 @@ export default function Matieres() {
         max,
       };
     });
-  }, []);
+  }, [data]);
 
   // Fonction de tri
   const handleSort = (property) => {
@@ -125,6 +154,11 @@ export default function Matieres() {
 
   return (
     <Box sx={{ width: "100%", p: 3 }}>
+      {isLoading ? (
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        Chargement...
+      </Box>
+    ) : (
       <Paper elevation={3} sx={{ width: "100%", mb: 2, borderRadius: 2 }}>
         {/* En-tête avec titre et statistiques */}
         <Box sx={{ p: 2, bgcolor: "#f5f5f5" }}>
@@ -346,6 +380,7 @@ export default function Matieres() {
           }
         />
       </Paper>
+      )}
     </Box>
   );
 }
