@@ -14,6 +14,8 @@ import Box from "@mui/material/Box";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Chip from "@mui/material/Chip";
+import { Link } from "react-router-dom";
+
 
 export default function Etudiants() {
   const [students, setStudents] = useState([]);
@@ -24,18 +26,18 @@ export default function Etudiants() {
   const [orderBy, setOrderBy] = useState("id");
   const [order, setOrder] = useState("asc");
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const studentsData = await studentsAPI.getAll();
-        
+
         // Transformer pour correspondre au format attendu
         const formattedStudents = studentsData.map(student => ({
           id: student._id,
           firstname: student.firstName,
           lastname: student.lastName
         }));
-        
+
         setStudents(formattedStudents);
         setLoading(false);
       } catch (err) {
@@ -47,11 +49,11 @@ export default function Etudiants() {
     fetchData();
   }, []);
 
-   /*if (loading) {
-    return <Box sx={{ p: 3, textAlign: 'center' }}>Chargement...</Box>;
-  }*/
+  /*if (loading) {
+   return <Box sx={{ p: 3, textAlign: 'center' }}>Chargement...</Box>;
+ }*/
 
-    const isLoading = loading;
+  const isLoading = loading;
 
   const uniqueStudents = students;
 
@@ -82,7 +84,7 @@ export default function Etudiants() {
   const filteredAndSortedData = useMemo(() => {
     let filtered = uniqueStudents.filter((student) => {
       const searchLower = searchTerm.toLowerCase();
-      
+
       return (
         student.firstname.toLowerCase().includes(searchLower) ||
         student.lastname.toLowerCase().includes(searchLower) ||
@@ -108,7 +110,7 @@ export default function Etudiants() {
     setPage(0);
   };
 
-  
+
 
   return (
     <Box sx={{ width: "100%", p: 3 }}>  {isLoading ? (
@@ -127,7 +129,7 @@ export default function Etudiants() {
               Total: {uniqueStudents.length} étudiant(s)
             </p>
           </Box>
-          
+
           <TextField
             fullWidth
             variant="outlined"
@@ -158,7 +160,7 @@ export default function Etudiants() {
                     active={orderBy === "id"}
                     direction={orderBy === "id" ? order : "asc"}
                     onClick={() => handleSort("id")}
-                    sx={{ 
+                    sx={{
                       color: "white !important",
                       "& .MuiTableSortLabel-icon": { color: "white !important" }
                     }}
@@ -171,7 +173,7 @@ export default function Etudiants() {
                     active={orderBy === "firstname"}
                     direction={orderBy === "firstname" ? order : "asc"}
                     onClick={() => handleSort("firstname")}
-                    sx={{ 
+                    sx={{
                       color: "white !important",
                       "& .MuiTableSortLabel-icon": { color: "white !important" }
                     }}
@@ -184,13 +186,16 @@ export default function Etudiants() {
                     active={orderBy === "lastname"}
                     direction={orderBy === "lastname" ? order : "asc"}
                     onClick={() => handleSort("lastname")}
-                    sx={{ 
+                    sx={{
                       color: "white !important",
                       "& .MuiTableSortLabel-icon": { color: "white !important" }
                     }}
                   >
                     <strong style={{ color: "white" }}>Nom</strong>
                   </TableSortLabel>
+                </TableCell>
+                <TableCell>
+                  <strong style={{ color: "white" }}>Actions</strong>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -213,9 +218,9 @@ export default function Etudiants() {
                     }}
                   >
                     <TableCell>
-                      <Chip 
-                        label={student.id} 
-                        size="small" 
+                      <Chip
+                        label={student.id}
+                        size="small"
                         color="primary"
                         variant="outlined"
                       />
@@ -226,7 +231,15 @@ export default function Etudiants() {
                     <TableCell>
                       <strong>{student.lastname}</strong>
                     </TableCell>
-                    
+                    <TableCell align="center">
+                      <Chip
+                        label="View Details"
+                        color="primary"
+                        clickable
+                        component={Link}
+                        to={`/etudiants/${student.id}`}
+                      />
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -249,7 +262,7 @@ export default function Etudiants() {
           }
         />
       </Paper>
-        )}
+    )}
     </Box>
   );
 }
